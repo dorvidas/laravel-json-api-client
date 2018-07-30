@@ -1,7 +1,7 @@
 {
     "name": "dorvidas/laravel-json-api-client",
     "description": "Laravel client for easy access of data from {json:api} APIs",
-    "type": "laravel package",
+    "type": "laravel-package",
     "license": "MIT",
     "authors": [
         {
