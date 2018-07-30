@@ -1,0 +1,21 @@
+{
+    "name": "dorvidas/laravel-json-api-client",
+    "description": "Laravel client for easy access of data from {json:api} APIs",
+    "type": "laravel package",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Darius Orvidas",
+            "email": "dorvidas@gmail.com"
+        }
+    ],
+    "require": {
+        "guzzlehttp/guzzle": "^6.3",
+        "woohoolabs/yin": "^3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Dorvidas\\JsonApiClient\\": "src/"
+        }
+    }
+}
