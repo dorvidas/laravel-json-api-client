@@ -4,9 +4,9 @@ Client for easy access of data from [{json:api}](http://jsonapi.org/) API.
 Making requests to API by using PHP HTTP Clients like Guzzle or CURL requires to much code.
 This package tries to simplify this process, by allowing to get data from API as simply as:
 ```php
-$users = JsonApiClient::get('users');
+$response = JsonApiClient::get('users');
 //Let's return this data to view
-return view('users', compact('users'));
+return view('users', ['users'=> $response->data]);
 ```
 
 ## Installation
