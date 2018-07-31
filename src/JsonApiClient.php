@@ -98,6 +98,9 @@ class JsonApiClient
     public function buildQuery()
     {
         $query = [];
+        if ($this->query) {
+            $query = $this->query;
+        }
         if ($this->limit || $this->offset) {
             $query['page'] = [];
             if ($this->limit) {
@@ -105,14 +108,6 @@ class JsonApiClient
             }
             if ($this->offset) {
                 $query['page']['offset'] = $this->offset;
-            }
-        }
-        if ($this->query) {
-            foreach ($this->query as $key => $value) {
-                if (!isset($value)) {
-                    continue;
-                }
-                $query[$key] = $value;
             }
         }
 
