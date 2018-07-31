@@ -16,7 +16,6 @@ class JsonApiResponse
     public $meta;
 
 
-
     public function __construct(\GuzzleHttp\Psr7\Response $response)
     {
         $this->response = $response;
@@ -36,10 +35,15 @@ class JsonApiResponse
 
             //Set data
             if (isset($decoded['data'])) {
-                $document = Document::createFromArray($decoded);
-                $hydrator = new ClassHydrator();
-                $hydrated = $hydrator->hydrate($document);
-                $this->data = is_array($hydrated)? collect($hydrated): $hydrated;
+                //This happens when array was expected but it is empty
+                if (empty($decoded['data'])) {
+                    $this->data = collect([]);
+                } else {
+                    $document = Document::createFromArray($decoded);
+                    $hydrator = new ClassHydrator();
+                    $hydrated = $hydrator->hydrate($document);
+                    $this->data = is_array($hydrated) ? collect($hydrated) : $hydrated;
+                }
             }
 
             //Set meta
