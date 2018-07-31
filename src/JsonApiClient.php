@@ -154,6 +154,27 @@ class JsonApiClient
     }
 
     /**
+     * Do a PATCH request to API
+     * @param $url
+     * @return JsonApiResponse|null
+     */
+    public function patch($url)
+    {
+        $params = [];
+        $params['headers'] = $this->getHeaders();
+        if (isset($this->jsonData)) {
+            $params['json'] = $this->jsonData;
+        }
+        if (isset($this->formData)) {
+            $params['form_params'] = $this->formData;
+        }
+
+        $response = $this->client->patch($url, $params);
+
+        return (new JsonApiResponse($response))->parse();
+    }
+
+    /**
      * @param $limit
      * @param int $offset
      * @return $this
