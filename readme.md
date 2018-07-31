@@ -26,7 +26,11 @@ JsonApiClient::get('users'); //get users
 ```
 * post($endpoint)
 ```php
-JsonApiClient::post('users');//store user
+JsonApiClient::jsonData([])->post('users');//store user
+```
+* patch($endpoint)
+```php
+JsonApiClient::jsonData([])->patch('users');//do patch request
 ```
 #### Request options
 * `JsonApiClient::get('users')->withIncludes(['posts'])` - adds query param `include=posts` to request URL. See http://jsonapi.org/format/#fetching-includes 
