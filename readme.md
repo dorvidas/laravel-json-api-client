@@ -36,6 +36,7 @@ JsonApiClient::jsonData([])->patch('users');//do patch request
 * `JsonApiClient::get('users')->withIncludes(['posts'])` - adds query param `include=posts` to request URL. See http://jsonapi.org/format/#fetching-includes 
 * `JsonApiClient::get('users')->withFields(['user'=> ['id','name']])` - adds query param `fields[users]=id,name`. See http://jsonapi.org/format/#fetching-sparse-fieldsets
 * `JsonApiClient::get('users')->withFilters(['users'=>['id'=>['eq'=>1]]])` - adds query param `filter[users][id][eq]=1`. {json:api} is agnostic about filtering, so you can choose your filtering strategy and pass what ever array you want. See http://jsonapi.org/format/#fetching-filtering.
+* `JsonApiClient::get('users')->withQuery(['field'=>1])` - adds query param `field=1=1`. In theory adding filter, includes, fields and pagination fields should be sufficient. 
 * `JsonApiClient::limit($limit, $offset)->get('users')` - add result constraints to query param `page[limit]=x&page[offet]=y. See http://jsonapi.org/format/#fetching-pagination
 * `JsonApiClient::formData(['name'=>'John'])->post('users')` - define post form data.
 * `JsonApiClient::jsonData(['name'=>'John'])->post('users')` - define post JSON data.

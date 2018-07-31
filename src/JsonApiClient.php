@@ -18,6 +18,7 @@ class JsonApiClient
     protected $includes = [];
     protected $fields = [];
     protected $filters = [];
+    protected $query = [];
     protected $limit;
     protected $offset;
     protected $formData;
@@ -61,6 +62,16 @@ class JsonApiClient
     }
 
     /**
+     * @param array $query
+     * @return $this
+     */
+    public function withQuery(array $query)
+    {
+        $this->query = $query;
+        return $this;
+    }
+
+    /**
      * @param $data
      * @return $this
      */
@@ -96,6 +107,15 @@ class JsonApiClient
                 $query['page']['offset'] = $this->offset;
             }
         }
+        if ($this->query) {
+            foreach ($this->query as $key => $value) {
+                if (!isset($value)) {
+                    continue;
+                }
+                $query[$key] = $value;
+            }
+        }
+
         if ($this->filters) {
             foreach ($this->filters as $resource => $columns) {
                 foreach ($columns as $column => $operands) {
