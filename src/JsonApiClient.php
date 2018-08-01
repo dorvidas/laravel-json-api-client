@@ -2,8 +2,6 @@
 
 namespace Dorvidas\JsonApiClient;
 
-use Illuminate\Support\Facades\Storage;
-
 /**
  * Guzzle client wrapper for requesting resources from {json:api} APIs
  *
@@ -24,6 +22,7 @@ class JsonApiClient
     protected $formData;
     protected $jsonData;
     protected $json = [];
+    protected $throwException = true;
 
     public function __construct($client, $token = null)
     {
@@ -91,6 +90,12 @@ class JsonApiClient
         return $this;
     }
 
+    public function throwException($status = true)
+    {
+        $this->throwException = $status;
+        return $this;
+    }
+
     /**
      * Build query params array
      * @return array
@@ -132,6 +137,24 @@ class JsonApiClient
         return $query;
     }
 
+    public function request($type, $url)
+    {
+        $params['headers'] = $this->getHeaders();
+        $params['query'] = $this->buildQuery();
+
+        if (isset($this->jsonData)) {
+            $params['json'] = $this->jsonData;
+        }
+        if (isset($this->formData)) {
+            $params['form_params'] = $this->formData;
+        }
+        $response = $this->client->request($type, $url, $params);
+
+        $jsonApiResponse = new JsonApiResponse($response, $this->throwException);
+        $jsonApiResponse->prepare();
+        return $jsonApiResponse;
+    }
+
     /**
      * Do a GET request to API
      * @param $url
@@ -139,12 +162,7 @@ class JsonApiClient
      */
     public function get($url)
     {
-        $response = $this->client->get($url, [
-            'headers' => $this->getHeaders(),
-            'query' => $this->buildQuery()
-        ]);
-
-        return (new JsonApiResponse($response))->parse();
+        return $this->request('GET', $url);
     }
 
     /**
@@ -154,18 +172,7 @@ class JsonApiClient
      */
     public function post($url)
     {
-        $params = [];
-        $params['headers'] = $this->getHeaders();
-        if (isset($this->jsonData)) {
-            $params['json'] = $this->jsonData;
-        }
-        if (isset($this->formData)) {
-            $params['form_params'] = $this->formData;
-        }
-
-        $response = $this->client->post($url, $params);
-
-        return (new JsonApiResponse($response))->parse();
+        return $this->request('POST', $url);
     }
 
     /**
@@ -175,18 +182,7 @@ class JsonApiClient
      */
     public function patch($url)
     {
-        $params = [];
-        $params['headers'] = $this->getHeaders();
-        if (isset($this->jsonData)) {
-            $params['json'] = $this->jsonData;
-        }
-        if (isset($this->formData)) {
-            $params['form_params'] = $this->formData;
-        }
-
-        $response = $this->client->patch($url, $params);
-
-        return (new JsonApiResponse($response))->parse();
+        return $this->request('PATCH', $url);
     }
 
     /**
@@ -218,54 +214,10 @@ class JsonApiClient
      * @param $token
      * @return $this
      */
-    public function token(
-        $token
-    ) {
+    public function token($token)
+    {
         $this->token = $token;
 
         return $this;
-    }
-
-    /**
-     * @param $username
-     * @param $password
-     * @param null $clientId
-     * @param null $clientSecret
-     * @return User
-     */
-    public function authenticate(
-        $username,
-        $password,
-        $clientId = null,
-        $clientSecret = null
-    ) {
-        if (!$clientId) {
-            $clientId = config('json_api.client_id');
-        }
-
-        if (!$clientSecret) {
-            $clientSecret = config('json_api.secret');
-        }
-
-        $response = $this->formData([
-            "grant_type" => "password",
-            "client_id" => $clientId,
-            "client_secret" => $clientSecret,
-            "username" => $username,
-            "password" => $password
-        ])
-            ->post('oauth/token');
-
-        //Check JWT
-        $payload = \Firebase\JWT\JWT::decode($response->body['access_token']
-            , Storage::get('oauth-public.key')
-            , ['RS256']);
-
-        $user = new \Dorvidas\JsonApiClient\User();
-        $user->id = $payload->sub;
-
-        session(['jwt' => $response->body['access_token']]);
-
-        return $user;
     }
 }

@@ -29,10 +29,10 @@ class ApiValidationException extends Exception
      */
     public function render($request)
     {
+        $errors = collect($this->message);
         if ($request->wantsJson()) {
-            return response($this->message, 422);
+            return response($errors, 422);
         } else {
-            $errors = collect(\GuzzleHttp\json_decode($this->message, true)['errors']);
             $errors->transform(function ($error) {
                 return $error['title'];
             });

@@ -40,6 +40,8 @@ JsonApiClient::jsonData([])->patch('users');//do patch request
 * `JsonApiClient::limit($limit, $offset)->get('users')` - add result constraints to query param `page[limit]=x&page[offet]=y. See http://jsonapi.org/format/#fetching-pagination
 * `JsonApiClient::formData(['name'=>'John'])->post('users')` - define post form data.
 * `JsonApiClient::jsonData(['name'=>'John'])->post('users')` - define post JSON data.
+* `JsonApiClient::throwException(true)` - whenever non 2xx status code received and appropriate exception is thrown.
+ Set to `false` if you want handel request response status yourself.
 * `JsonApiClient::token($accessToken)->get('users')` - define access token which will be added to `Authorization:Bearer {$accessToken}` header.
 Note, if there is `jwt` session variable there is no need to set token here, because access token will be added to request automatically.
 
@@ -48,25 +50,12 @@ Requests will return `JsonApiResponse` object. It will contain public variables:
 * `$resopnse->data` - contains response data.
 * `$resopnse->meta` - contains meta data of a response.
 * `$resopnse->errors` - contains errors data of a response.
+* `$resopnse->status` - holds HTTP status code of request.
 Also it has helper functions
 * `$resopnse->meta('count')` - return meta data with key `count`.
 
-### Helper functions
-
-* `JsonApiClient::authenticate($username, $password)` - will send a POST request to `/oauth/token` endpoint.
-Use only if API uses [Laravel Passport](https://laravel.com/docs/5.6/passport) or any other OAuth2 implementation.
-Data posted:
-```php
-[
-  "grant_type": "password",
-  "client_id": "changeit",//this is defined in config
-  "client_secret": "changeit",//this is taken from config
-  "username": "$username",
-  "password": "$password",
-  "scope": ""
-]
-```
-Method returns `Dorvidas\JsonApiClient\User` object that extends `Illuminate\Foundation\Auth\User` class so it can be used when making [custom authentication user provider](https://laravel.com/docs/5.6/authentication#adding-custom-user-providers).
+### Exceptions
+//@todo
 
 
 
