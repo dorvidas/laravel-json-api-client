@@ -186,6 +186,16 @@ class JsonApiClient
     }
 
     /**
+     * Do a DELETE request to API
+     * @param $url
+     * @return JsonApiResponse|null
+     */
+    public function delete($url)
+    {
+        return $this->request('DELETE', $url);
+    }
+
+    /**
      * @param $limit
      * @param int $offset
      * @return $this
