@@ -150,6 +150,10 @@ class JsonApiClient
         }
         $response = $this->client->request($type, $url, $params);
 
+        if (config('json_api_client.log')) {
+            \Log::debug('JSONAPI: ' . $type . ' ' . $url);
+        }
+
         $jsonApiResponse = new JsonApiResponse($response, $this->throwException);
         $jsonApiResponse->prepare();
         return $jsonApiResponse;
