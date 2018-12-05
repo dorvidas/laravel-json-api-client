@@ -38,7 +38,7 @@ JsonApiClient::jsonData([])->patch('users');//do patch request
 * `JsonApiClient::get('users')->withFilters(['users'=>['id'=>['eq'=>1]]])` - adds query param `filter[users][id][eq]=1`. {json:api} is agnostic about filtering, so you can choose your filtering strategy and pass what ever array you want. See http://jsonapi.org/format/#fetching-filtering.
 * `JsonApiClient::get('users')->withQuery(['field'=>1])` - adds query param `field=1=1`. In theory adding filter, includes, fields and pagination fields should be sufficient. 
 * `JsonApiClient::limit($limit, $offset)->get('users')` - add result constraints to query param `page[limit]=x&page[offet]=y. See http://jsonapi.org/format/#fetching-pagination
-* `JsonApiClient::formData(['name'=>'John'])->post('users')` - define post form data. Form data can contain files i.e `JsonApiClient::files(['image'=> $request->file('image')])->post('photos')`.
+* `JsonApiClient::formData(['name'=>'John'])->post('users')` - define post form data. Form data can contain files i.e `JsonApiClient::formData(['image'=> $request->file('image')])->post('photos')`.
 * `JsonApiClient::jsonData(['name'=>'John'])->post('users')` - define post JSON data.
 * `JsonApiClient::throwException(true)` - whenever non 2xx status code received and appropriate exception is thrown.
  Set to `false` if you want handel request response status yourself.
