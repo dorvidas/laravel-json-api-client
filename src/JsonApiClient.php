@@ -16,6 +16,7 @@ class JsonApiClient
     protected $includes = [];
     protected $fields = [];
     protected $filters = [];
+    protected $multipart = false;
     protected $query = [];
     protected $limit;
     protected $offset;
@@ -77,6 +78,13 @@ class JsonApiClient
     public function formData($data)
     {
         $this->formData = $data;
+
+        foreach ($data as $d) {
+            if ($d instanceof \Illuminate\Http\UploadedFile) {
+                $this->multipart = true;
+            }
+        }
+
         return $this;
     }
 
@@ -145,9 +153,13 @@ class JsonApiClient
         if (isset($this->jsonData)) {
             $params['json'] = $this->jsonData;
         }
-        if (isset($this->formData)) {
+
+        if ($this->multipart) {
+            $params['multipart'] = $this->convertFormDataIntoMultipart($this->formData);
+        } else {
             $params['form_params'] = $this->formData;
         }
+
         $response = $this->client->request($type, $url, $params);
 
         if (config('json_api_client.log')) {
@@ -157,6 +169,28 @@ class JsonApiClient
         $jsonApiResponse = new JsonApiResponse($response, $this->throwException);
         $jsonApiResponse->prepare();
         return $jsonApiResponse;
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     */
+    protected function convertFormDataIntoMultipart($data = [])
+    {
+        $res = [];
+        foreach ($data as $name => $value) {
+            $row = ['name' => $name];
+
+            if ($value instanceof \Illuminate\Http\UploadedFile) {
+                $row['contents'] = fopen($value->path(), 'r');
+                $row['filename'] = $value->getClientOriginalName();
+            } else {
+                $row['contents'] = $value;
+            }
+
+            $res[] = $row;
+        }
+        return $res;
     }
 
     /**
