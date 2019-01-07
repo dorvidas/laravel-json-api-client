@@ -126,11 +126,16 @@ class JsonApiClient
 
         if ($this->filters) {
             foreach ($this->filters as $resource => $columns) {
-                foreach ($columns as $column => $operands) {
-                    foreach ($operands as $operand => $value) {
-                        $query['filter'][$resource][$column][$operand] = is_array($value) ? implode(',',
-                            $value) : $value;
+                if(is_array($columns)){
+                    foreach ($columns as $column => $operands) {
+                        foreach ($operands as $operand => $value) {
+                            $query['filter'][$resource][$column][$operand] = is_array($value) ? implode(',',
+                                $value) : $value;
+                        }
                     }
+                }
+                else{
+                    $query['filter'][$resource] = $columns;
                 }
             }
         }
